@@ -11,7 +11,7 @@ const moodWords = ['很低落','有点累','还可以','挺好的','很开心'];
 const statusNames = {draft:'尚未分享',waiting:'等待伴侣确认',accepted:'已接受',in_progress:'进行中',completed:'已完成',cancelled:'已取消 / 拒绝',proposed:'等待妈妈确认修改'};
 const navs = [
   ['home','首页','home'],['mood','心情与睡眠','heart'],['needs','我的需要','leaf'],['family','家庭协作','people'],
-  ['practice','沟通练习','chat'],['support','日常支持','sun'],['help','求助信息','lifebuoy'],['notes','备忘录','note'],['settings','数据与设置','settings']
+  ['practice','沟通练习','chat'],['support','日常支持','sun'],['help','求助信息','lifebuoy'],['notes','备忘录','note'],['settings','数据与设置','settings'],['care','陪伴支持','heart'],['records','孕期记录','calendar'],['community','孕妈社区','people'],['my','我的','settings']
 ];
 const paths = {
   home:'m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9',
@@ -77,14 +77,40 @@ const scenarios = [
 
 function toast(message, error=false) {
   clearTimeout(toastTimer);
+  if(error && $('#modal').open) showFormError($('#modal').querySelector('form') || $('#modal .modal-body'), message);
   const el = $('#toast'); el.textContent = message; el.className = `toast show ${error?'error':''}`;
   toastTimer = setTimeout(() => { el.className = 'toast'; }, error ? 6500 : 3200);
 }
+function showFormError(container, message, field=null) {
+  let feedback=container.querySelector('.form-feedback');
+  if(!feedback){feedback=document.createElement('div');feedback.className='form-feedback';feedback.setAttribute('role','alert');feedback.id=`form-error-${++fieldNumber}`;const footer=container.querySelector('.modal-footer');if(footer)footer.before(feedback);else container.prepend(feedback);}
+  feedback.textContent=message;feedback.hidden=false;
+  if(field){field.setAttribute('aria-invalid','true');field.setAttribute('aria-describedby',feedback.id);field.focus();}
+  feedback.scrollIntoView({block:'nearest'});
+}
+document.addEventListener('invalid',event=>{
+  const field=event.target,form=field.closest('form[data-form]');if(!form)return;
+  event.preventDefault();if(form.querySelector(':invalid')!==field)return;
+  const label=field.labels?.[0]?.textContent.trim() || '这一项';
+  showFormError(form,field.validity.valueMissing?`还没有保存：请填写「${label}」。`:`还没有保存：请检查「${label}」的格式。`,field);
+},true);
+document.addEventListener('input',event=>{
+  const field=event.target,form=field.closest('form[data-form]');if(!form)return;
+  if(field.validity?.valid)field.removeAttribute('aria-invalid');
+  const feedback=form.querySelector('.form-feedback');if(feedback && !form.querySelector(':invalid'))feedback.hidden=true;
+});
 async function api(path, options={}) {
-  const response = await fetch(path, {cache:'no-store', ...options});
-  const payload = await response.json();
-  if (!response.ok) { const error = new Error(payload.error || '暂时无法保存'); error.status=response.status; throw error; }
-  return payload;
+  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
+  try {
+    const response=await fetch(path,{cache:'no-store',...options,signal:controller.signal});
+    const payload=await response.json();
+    if(!response.ok){const error=new Error(payload.error||'暂时无法保存');error.status=response.status;throw error;}
+    return payload;
+  } catch(error) {
+    if(error.name==='AbortError')throw new Error('保存请求超时。请保留填写内容，检查启动窗口，再重新读取确认是否已保存。');
+    if(error instanceof TypeError)throw new Error('无法连接本地服务。请重新打开启动程序，填写内容仍保留在这里。');
+    throw error;
+  } finally {clearTimeout(timeout);}
 }
 async function load() {
   const result=await api('/api/state'); db=result.state; revision=result.revision;
@@ -115,16 +141,16 @@ function render() {
   if(!db)return;
   if(!navs.some(n=>n[0]===page))page='home';
   renderChrome();
-  if(role==='partner'&&['mood','needs','support','notes'].includes(page)){
+  if(role==='partner'&&['mood','needs','support','notes','records'].includes(page)){
     $('#main').innerHTML=`${head(navs.find(n=>n[0]===page)[1],'每一份感受，都值得被尊重')}<div class="card locked">${icon('lock')}<h2>这是妈妈的个人空间</h2><p>伴侣视角可以查看已分享的协作安排、进行沟通练习和查看求助信息。<br>心情、原始表达、备忘和帮助反馈默认不展示在这里。</p>${button('回到家庭协作','go','family','primary','people')} ${button('切换使用视角','role')}</div>`;
   }else{
-    const views={home:homeView,mood:moodView,needs:needsView,family:familyView,practice:practiceView,support:supportView,help:helpView,notes:notesView,settings:settingsView};
-    $('#main').innerHTML=views[page]();
+    const views={home:careHomeView,care:careHubView,records:careRecordsView,community:careCommunityView,my:careMyView,mood:moodView,needs:needsView,family:familyView,practice:practiceView,support:supportView,help:helpView,notes:notesView,settings:settingsView};
+    $('#main').innerHTML=careSubnav()+views[page]();
   }
   document.title=`${navs.find(n=>n[0]===page)[1]} · 孕心智护`;
 }
 function renderChrome(){
-  $('#sidebar').innerHTML=`<a class="brand" href="#home" aria-label="孕心智护首页"><img src="/favicon.svg" alt=""><div><strong>孕心智护</strong><small>YUNXIN CARE</small></div></a><div class="nav-caption">我的支持空间</div><nav class="nav" aria-label="主导航">${navs.map(([id,label,ico],i)=>`${i===7?'<div class="nav-divider"></div>':''}<a href="#${id}" class="${page===id?'active':''}" ${page===id?'aria-current="page"':''} title="${label}">${icon(ico)}<span class="nav-label">${label}</span>${page===id?'<i class="nav-dot"></i>':''}</a>`).join('')}</nav><div class="side-note"><div class="note-top">${icon('shield')}只在你的电脑上</div><p>每一份记录，都留在本地。<br>按自己的节奏，慢慢来。</p></div>`;
+  $('#sidebar').innerHTML=`<a class="brand" href="#home" aria-label="孕心智护首页"><img src="/favicon.svg" alt=""><div><strong>孕心智护</strong><small>YUNXIN CARE</small></div></a><div class="nav-caption">我的支持空间</div><nav class="nav" aria-label="主导航">${careNavs.map(([id,label,ico],i)=>`${i===7?'<div class="nav-divider"></div>':''}<a href="#${id}" class="${careSection()===id?'active':''}" ${careSection()===id?'aria-current="page"':''} title="${label}">${icon(ico)}<span class="nav-label">${label}</span>${careSection()===id?'<i class="nav-dot"></i>':''}</a>`).join('')}</nav><div class="side-note"><div class="note-top">${icon('shield')}只在你的电脑上</div><p>每一份记录，都留在本地。<br>按自己的节奏，慢慢来。</p></div>`;
   $('#topbar').innerHTML=`<div class="breadcrumb"><span>我的空间</span>${icon('chevron')}<b>${navs.find(n=>n[0]===page)[1]}</b></div><div class="top-actions"><div class="local-status"><i class="status-dot"></i>离线可用 · 本地保存</div><button class="role-button" data-action="role"><span class="avatar">${role==='mother'?'妈':'伴'}</span><span>${role==='mother'?'妈妈':'伴侣'}视角</span>${icon('down')}</button></div>`;
 }
 function homeView(){
@@ -146,7 +172,7 @@ function homeView(){
     ['chat','purple','沟通练习','一起学倾听','一次只练习一小步','practice']
   ];
   return `${head('首页','从一件小事开始，让今天轻松一点。',`<span class="date-label">${icon('calendar')}${dateStr}</span>`)}
-    <section class="hero"><div class="hero-copy"><div class="eyebrow">A LITTLE CARE, EVERY DAY</div><h2>${hello}</h2><p>${own?'不必每一天都做得很好。<br>在这里，记录感受、说出需要，让身边的人一起分担。':'陪伴不需要完美的答案。<br>从听见需要开始，一起商量，再接手一件力所能及的事。'}</p>${button(own?'记录此刻的心情':'查看已分享的安排','go',own?'mood':'family','primary',own?'heart':'people')}</div><img src="/illustration.svg" alt="坐在椅子上安静阅读的妈妈，旁边有一株绿植"></section>
+    <section class="hero"><div class="hero-copy"><div class="eyebrow">A LITTLE CARE, EVERY DAY</div><h2>${hello}</h2><p>${own?'不必每一天都做得很好。<br>在这里，记录感受、说出需要，让身边的人一起分担。':'陪伴不需要完美的答案。<br>从听见需要开始，一起商量，再接手一件力所能及的事。'}</p>${button(own?'记录此刻的心情':'查看已分享的安排','go',own?'mood':'family','primary',own?'heart':'people')}</div><yunxin-pet config="${esc(JSON.stringify(db.settings.pet||{}))}"></yunxin-pet></section>
     <div class="summary-grid">${cards.map(([ico,color,label,value,sub,target])=>`<a class="summary-card" href="#${target}"><div class="tile-icon ${color}">${icon(ico)}</div><div><div class="summary-label">${label}</div><div class="summary-value">${value}</div><div class="summary-sub">${sub}</div></div></a>`).join('')}</div>
     <div class="dashboard-grid"><div class="stack"><section class="card"><div class="card-header"><h2>${icon('calendar')}今日计划 <span class="count">${todays.length} 项</span></h2>${own?button('添加计划','task-new','','small','plus'):`<a class="text-link" href="#family">全部协作 ${icon('chevron')}</a>`}</div>${todays.length?todays.slice(0,5).map(t=>`<div class="list-row"><div class="status-ring ${t.status==='completed'?'done':''}">${t.status==='completed'?icon('check'):''}</div><div class="content"><h3>${esc(t.title)}</h3><p>${esc(t.time||'时间待商量')} · ${esc(t.owner)}负责</p></div>${taskPill(t)}${iconButton('查看安排','task-open',t.id,'chevron')}</div>`).join(''):empty('今天还没有安排','留一点空白也很好。需要时，把想做的小事记在这里。',own?button('添加第一项计划','task-new','','small'):'',true)}${todays.length>5?'<a class="text-link spaced" href="#family">查看完整计划 →</a>':''}</section>
     <section class="card"><div class="card-header"><h2>${icon('leaf')}${own?'给今天的一点支持':'一起练习好好说话'}</h2><a class="text-link" href="#${own?'support':'practice'}">查看更多 ${icon('chevron')}</a></div>${own?rankActivities().slice(0,2).map(a=>`<div class="suggestion"><div class="tile-icon ${a.id==='quiet'?'peach':''}">${icon(a.icon)}</div><div class="content"><h3>${a.title}</h3><p>${a.minutes} 分钟 · ${esc(a.reason)}</p></div>${button('试试看','activity',a.id,'small')}</div>`).join(''):`<p class="small-copy">“你希望我先听你说，还是一起想想办法？”<br>一个简单的问题，可以让支持更贴近对方的需要。</p>${button('开始倾听练习','practice-start','listening','small','chat')}`}</section>
@@ -223,7 +249,7 @@ function notesList(){
 function notesView(){return `${head('备忘录','先记下来，不必每件事都放在心上。',button('新建备忘','note-new','','primary','plus'))}<div class="toolbar"><span class="subtle">${db.notes.length} 条记录 · 置顶内容优先显示</span><input type="search" class="input search-input" id="note-search" placeholder="搜索备忘内容…" aria-label="搜索备忘" value="${esc(noteQuery)}"></div><div id="note-list">${notesList()}</div>`;}
 function settingsView(){
   if(role==='partner')return `${head('数据与设置','本地使用，随时切换体验视角。')}<section class="card"><div class="settings-row"><div><h3>当前为伴侣视角</h3><p>基本偏好与数据管理入口位于妈妈视角。</p></div>${button('切换使用视角','role')}</div>${panel('角色切换只是同一台电脑上的操作视角，没有登录验证，不等于真实账户隔离。')}</section>`;
-  const total=['moods','needs','tasks','notes','practices','activities','contacts'].reduce((n,k)=>n+db[k].length,0);
+  const total=['moods','needs','tasks','notes','practices','activities','contacts'].reduce((n,k)=>n+db[k].length,0)+(db.pregnancy?.entries.length||0)+(db.pregnancy?.visits.length||0);
   return `${head('数据与设置','你的记录，由你自己掌握。')}<div class="two-col"><div class="stack"><section class="card"><div class="card-header"><h2>我的偏好</h2></div><form data-form="settings">${inputField('name','希望怎么称呼你',db.settings.name,'text','maxlength="30" placeholder="选填，首页会用这个名字问候你"')}${selectField('stage','当前阶段',['产后居家','孕期准备','其他'],db.settings.stage)}${selectField('preferred','更偏好的支持方式',categories,db.settings.preferred)}${selectField('available','通常可以留出的时间（分钟）',['5','10','15','30'],String(db.settings.available))}<button class="btn primary" type="submit">保存偏好</button></form></section><section class="card"><div class="card-header"><h2>使用视角</h2></div><p class="small-copy">当前：妈妈视角。伴侣视角展示已分享的安排，以及沟通练习和求助信息。</p>${button('切换到伴侣视角','switch-role','partner','','people')}<div class="privacy-line">${icon('info')}视角切换没有身份验证，拿到电脑的人都可以切换。</div></section></div><div class="stack"><section class="card"><div class="card-header"><h2>本地数据</h2><span class="pill">保存在当前电脑</span></div><span class="export-count">${total} <small class="subtle">条记录</small></span><p class="small-copy">保存按钮成功提示后，记录已经写入电脑上的文件。刷新页面、关闭浏览器或重启电脑后，重新启动应用即可继续使用。</p><div class="file-path">孕心智护 / data / data.json</div><div class="settings-row"><div><h3>导出完整备份</h3><p>将所有记录存成一个文件，建议定期另存一份。</p></div>${button('导出备份','export','','small','download')}</div><div class="settings-row"><div><h3>从备份恢复</h3><p>先检查文件，再确认是否覆盖当前全部记录。</p></div>${button('选择备份','import','','small','upload')}</div><input type="file" id="backup-file" accept=".json,application/json" class="hidden"><p class="small-copy spaced no-margin">备份包含个人记录，是未加密文件，请放在自己管理的位置。本应用不提供云同步。</p></section><section class="card danger-area"><h3>清空所有记录</h3><p class="small-copy">这会重置当前数据和偏好。请先导出备份；操作前需要输入“清空”。</p>${button('清空本地记录','clear','','small danger','trash')}</section><div class="panel-note">${icon('leaf')}<span>本地基础版 1.0<br>预设支持内容与沟通练习，不接入在线 AI，不提供诊断或自动救援。</span></div></div></div>`;
 }
 
@@ -233,7 +259,7 @@ function needModal(id='',category=''){
 }
 function taskModal(id='',needId=''){
   const t=db.tasks.find(x=>x.id===id);const n=db.needs.find(x=>x.id===needId);
-  showModal(t?'编辑安排':'把需要整理成一个具体安排',`<form data-form="task" data-id="${esc(t?.id||'')}" data-need="${esc(t?.needId||needId)}">${inputField('title','这次希望做什么',t?.title||(n?`我希望得到${n.category}支持`:''),'text','required maxlength="100" placeholder="例如：今晚帮我收拾餐桌"')}<div class="form-grid">${inputField('date','日期',t?.date||today(),'date','required')}${inputField('time','时间（可留空后商量）',t?.time||'','time')}${selectField('owner','希望由谁负责',['伴侣','妈妈'],t?.owner||'伴侣')}${selectField('category','对应的支持需要',categories,t?.category||n?.category||'实际帮忙')}</div>${textField('details','怎样算完成 / 有什么需要商量的',t?.details||'','例如：收好碗筷并擦干净桌面。遇到不确定的小事可先按自己的判断处理。','required')}${panel('这里填写的是你准备分享的安排。原始倾诉不会自动复制进来。保存后，仍需预览并确认才会分享给伴侣。')}${footerButtons('先保存安排')}</form>`);
+  showModal(t?'编辑安排':'把需要整理成一个具体安排',`<form data-form="task" data-id="${esc(t?.id||'')}" data-need="${esc(t?.needId||needId)}">${inputField('title','这次希望做什么',t?.title||(n?`我希望得到${n.category}支持`:''),'text','required maxlength="100" placeholder="例如：今晚帮我收拾餐桌"')}<div class="form-grid">${inputField('date','日期',t?.date||today(),'date','required')}${inputField('time','时间（可留空后商量）',t?.time||'','time')}${selectField('owner','希望由谁负责',['伴侣','妈妈'],t?.owner||'伴侣')}${selectField('category','对应的支持需要',categories,t?.category||n?.category||'实际帮忙')}</div>${textField('details','怎样算完成 / 有什么需要商量的（选填）',t?.details||'','例如：收好碗筷并擦干净桌面。也可以先保存，稍后补充。')}${panel('这里填写的是你准备分享的安排。原始倾诉不会自动复制进来。保存后，仍需预览并确认才会分享给伴侣。')}${footerButtons('先保存安排')}</form>`);
 }
 function shareModal(id){
   const t=db.tasks.find(x=>x.id===id); if(!t)return;
@@ -336,7 +362,7 @@ document.addEventListener('click',async event=>{
     if(role!=='mother'||!pendingImport)return;const imported=pendingImport;
     if(await commit(d=>{Object.keys(d).forEach(k=>delete d[k]);Object.assign(d,imported);},'备份已恢复')){closeModal();render();}return;
   }
-  if(action==='clear')return showModal('清空所有本地记录',`<p>心情、需要、协作安排、备忘、练习、反馈、联系人和个人偏好都将被重置。</p><p>请先导出备份。清空后，普通页面无法撤销；上一次保存的技术恢复文件也会清除。</p><form data-form="clear">${inputField('confirm','请输入“清空”确认','','text','required pattern="清空" autocomplete="off"')}${footerButtons('确认清空')}</form>`);
+  if(action==='clear')return showModal('清空所有本地记录',`<p>孕期记录、产检安排、心情、需要、协作安排、备忘、练习、反馈、联系人和个人偏好都将被重置。</p><p>请先导出备份。清空后，普通页面无法撤销；上一次保存的技术恢复文件也会清除。</p><form data-form="clear">${inputField('confirm','请输入“清空”确认','','text','required pattern="清空" autocomplete="off"')}${footerButtons('确认清空')}</form>`);
 });
 
 document.addEventListener('submit',async event=>{
@@ -344,7 +370,7 @@ document.addEventListener('submit',async event=>{
   const kind=form.dataset.form,id=form.dataset.id||'',data=Object.fromEntries(new FormData(form));
   for(const k in data)if(typeof data[k]==='string')data[k]=data[k].trim();
   if(role==='partner'&&!['practice','proposal'].includes(kind))return toast('请切换到妈妈视角后操作',true);
-  const submit=$('[type="submit"]',form);if(submit)submit.disabled=true;
+  const submit=$('[type="submit"]',form),submitLabel=submit?.textContent;if(submit){submit.disabled=true;submit.textContent='正在保存…';}
   let ok=false;
   try{
     if(kind==='mood'){
@@ -362,7 +388,8 @@ document.addEventListener('submit',async event=>{
       ok=await commit(d=>{const old=d.needs.find(x=>x.id===id);const row={id:id||uid(),category:data.category,text:data.text,created:old?.created||stamp()};if(id)d.needs[d.needs.findIndex(x=>x.id===id)]=row;else d.needs.push(row);},'需要已由你确认并保存');
     }
     if(kind==='task'){
-      if(!data.title||!data.details)return toast('请填写具体安排与完成要求',true);
+      if(!data.title)return toast('还没有保存：请填写这次希望做什么。',true);
+      if(!data.date)return toast('还没有保存：请选择安排日期。',true);
       ok=await commit(d=>{const old=d.tasks.find(x=>x.id===id);const row={...old,id:id||uid(),title:data.title,date:data.date,time:data.time,owner:data.owner,details:data.details,category:data.category,needId:form.dataset.need||'',status:'draft',shared:false,revoked:false,feedback:null,proposal:''};if(id)d.tasks[d.tasks.findIndex(x=>x.id===id)]=row;else d.tasks.push(row);},'安排已保存；需要分享时，请先预览');
       if(ok){page='family';location.hash='family';}
     }
@@ -384,13 +411,13 @@ document.addEventListener('submit',async event=>{
       if(!data.name||!data.phone)return toast('请填写姓名和联系方式',true);
       ok=await commit(d=>{const row={id:id||uid(),name:data.name,phone:data.phone,kind:data.kind,address:data.address,note:data.note};if(id)d.contacts[d.contacts.findIndex(x=>x.id===id)]=row;else d.contacts.push(row);});
     }
-    if(kind==='settings')ok=await commit(d=>{d.settings={name:data.name,stage:data.stage,preferred:data.preferred,available:Number(data.available)};},'偏好已保存');
+    if(kind==='settings')ok=await commit(d=>{d.settings={...d.settings,name:data.name,stage:data.stage,preferred:data.preferred,available:Number(data.available)};},'偏好已保存');
     if(kind==='clear'&&data.confirm==='清空'){
-      ok=await commit(d=>{d.settings={name:'',stage:'产后居家',preferred:'休息',available:15};for(const k of ['moods','needs','tasks','notes','practices','activities','contacts'])d[k]=[];d.helpCard={person:'',place:'',message:''};},'已清空当前记录与偏好',true);
+      ok=await commit(d=>{d.settings={name:'',stage:'产后居家',preferred:'休息',available:15};delete d.pregnancy;for(const k of ['moods','needs','tasks','notes','practices','activities','contacts'])d[k]=[];d.helpCard={person:'',place:'',message:''};},'已清空当前记录与偏好',true);
     }
     if(ok){closeModal();render();}
   }catch(e){toast(e.message||'操作没有完成，请重试',true);}
-  finally{if(submit)submit.disabled=false;}
+  finally{if(submit){submit.disabled=false;submit.textContent=submitLabel;}}
 });
 document.addEventListener('input',event=>{
   if(event.target.id==='note-search'){noteQuery=event.target.value;$('#note-list').innerHTML=notesList();}
@@ -404,7 +431,7 @@ document.addEventListener('change',async event=>{
     if(data.app!=='yunxin-local'||data.backupVersion!==1||data.state?.version!==1)throw new Error('这不是支持的孕心智护备份文件');
     const groups=['moods','needs','tasks','notes','practices','activities','contacts'];
     if(groups.some(k=>!Array.isArray(data.state[k])))throw new Error('备份结构不完整');
-    const count=groups.reduce((n,k)=>n+data.state[k].length,0);
+    const count=groups.reduce((n,k)=>n+data.state[k].length,0)+(data.state.pregnancy?.entries?.length||0)+(data.state.pregnancy?.visits?.length||0);if(data.state.pregnancy)YunxinPregnancy.validate(data.state.pregnancy);
     pendingImport=data.state;
     showModal('确认恢复这份备份？',`<p>所选文件：${esc(file.name)}</p><p>包含 ${count} 条记录。恢复后会<strong>覆盖当前全部记录和偏好</strong>，不会自动合并。系统还会检查数据格式，通过后才写入。</p><p>建议先取消并导出当前数据，保留一份独立备份。</p><div class="modal-footer">${button('先取消','close')}${button('确认覆盖并恢复','import-confirm','','primary')}</div>`);
   }catch(e){toast(e.message||'无法读取这个备份文件',true);}
@@ -412,4 +439,6 @@ document.addEventListener('change',async event=>{
 $('#modal').addEventListener('close',()=>clearInterval(timerInterval));
 window.addEventListener('hashchange',()=>{page=location.hash.slice(1)||'home';render();window.scrollTo(0,0);});
 window.addEventListener('beforeunload',event=>{if(busy){event.preventDefault();event.returnValue='';}});
-load().then(render).catch(error=>{$('#main').innerHTML=`<div class="card locked">${icon('info')}<h2>暂时无法打开本地记录</h2><p>${esc(error.message||'请先双击“启动孕心智护.command”，再从浏览器打开本地地址。')}</p><p>为避免覆盖原有内容，页面没有创建或重置记录。</p><button class="btn" id="retry-load">重新读取</button></div>`;$('#retry-load').addEventListener('click',()=>location.reload());});
+window.addEventListener('DOMContentLoaded',()=>{load().then(render).catch(error=>{$('#main').innerHTML=`<div class="card locked">${icon('info')}<h2>暂时无法打开本地记录</h2><p>${esc(error.message||'请先双击“启动孕心智护.command”，再从浏览器打开本地地址。')}</p><p>为避免覆盖原有内容，页面没有创建或重置记录。</p><button class="btn" id="retry-load">重新读取</button></div>`;$('#retry-load').addEventListener('click',()=>location.reload());});});
+
+document.addEventListener('pet-save',async event=>{const ok=await commit(d=>{d.settings.pet=event.detail.config;},'小伙伴的样子已保存');event.detail.done(ok);});
