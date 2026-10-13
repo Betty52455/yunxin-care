@@ -2,3 +2,13 @@ data/
 __pycache__/
 .DS_Store
 tests/output/
+tmp/
+*.zip
+*.tar.gz
+node_modules/
+.env
+.env.*
+!.env.example
+# Hosted source is versioned separately by Sites in its own repository.
+/online/
+/output/

@@ -47,6 +47,52 @@ def validate_state(s):
         string(s["settings"][k], 100)
     require(s["settings"]["preferred"] in ("倾听", "休息", "实际帮忙", "信息", "陪伴"))
     number(s["settings"]["available"], 1, 120)
+    if "pet" in s["settings"]:
+        import re
+        pet = s["settings"]["pet"]
+        obj(pet, ["name", "face", "eyes", "gap", "smile", "hair", "skin", "hairColor", "outfit", "accessory"])
+        string(pet["name"], 12)
+        for key in ("face", "eyes", "gap", "smile"):
+            number(pet[key], 0, 100)
+        for key in ("skin", "hairColor", "outfit"):
+            require(isinstance(pet[key], str) and re.fullmatch(r"#[0-9a-fA-F]{6}", pet[key]) is not None)
+        require(pet["hair"] in ("bob", "short", "buns"))
+        require(pet["accessory"] in ("leaf", "glasses", "none"))
+    if "pregnancy" in s:
+        p = s["pregnancy"]
+        obj(p, ["dueDate", "preWeight", "height", "entries", "visits"])
+        if p["dueDate"]:
+            date(p["dueDate"])
+        else:
+            require(p["dueDate"] == "")
+        for key, low, high in (("preWeight", 20, 300), ("height", 80, 230)):
+            if p[key] is not None:
+                number(p[key], low, high)
+        import re
+        for group in ("entries", "visits"):
+            require(isinstance(p[group], list) and len(p[group]) <= 10000)
+            ids, dates = set(), set()
+            for row in p[group]:
+                obj(row, ["id", "date", "note"] + (["weight", "systolic", "diastolic"] if group == "entries" else ["title", "time", "done"]))
+                string(row["id"], 100)
+                require(row["id"] and row["id"] not in ids)
+                ids.add(row["id"])
+                date(row["date"])
+                string(row["note"], 5000)
+                if group == "entries":
+                    require(row["date"] not in dates, "同一天的身体记录请合并到一条")
+                    dates.add(row["date"])
+                    for key, low, high in (("weight", 20, 300), ("systolic", 40, 300), ("diastolic", 20, 200)):
+                        if row[key] is not None:
+                            number(row[key], low, high)
+                    require((row["systolic"] is None) == (row["diastolic"] is None), "血压请同时填写高压和低压")
+                    require(row["weight"] is not None or row["systolic"] is not None or row["note"].strip(), "至少填写一项身体记录")
+                else:
+                    string(row["title"], 100)
+                    require(row["title"].strip())
+                    string(row["time"], 5)
+                    require(not row["time"] or re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", row["time"]))
+                    require(type(row["done"]) is bool)
     obj(s["helpCard"], ["person", "place", "message"])
     for key in ("person", "place", "message"):
         string(s["helpCard"][key])
@@ -159,7 +205,7 @@ def make_handler(storage):
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
-            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
             self.end_headers()
             self.wfile.write(data)
 
@@ -181,6 +227,12 @@ def make_handler(storage):
                 except RuntimeError as e:
                     return self.send(500, {"error": str(e)})
             files = {"/": ("index.html", "text/html"), "/index.html": ("index.html", "text/html"),
+                     "/weather.js": ("weather.js", "text/javascript"),
+                     "/care.js": ("care.js", "text/javascript"), "/care.css": ("care.css", "text/css"),
+                     "/pregnancy.js": ("pregnancy.js", "text/javascript"),
+                     "/assets/plush-bob.png": ("assets/plush-bob.png", "image/png"),
+                     "/assets/plush-buns.png": ("assets/plush-buns.png", "image/png"),
+                     "/pet.js": ("pet.js", "text/javascript"), "/pet.css": ("pet.css", "text/css"),
                      "/app.js": ("app.js", "text/javascript"), "/styles.css": ("styles.css", "text/css"),
                      "/illustration.svg": ("illustration.svg", "image/svg+xml"), "/favicon.svg": ("favicon.svg", "image/svg+xml")}
             if path not in files:
