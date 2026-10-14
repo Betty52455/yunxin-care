@@ -70,6 +70,19 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.store.save(value, 0)
 
+    def test_companion_survives_restart_and_invalid_import_is_rejected(self):
+        state = self.with_note()
+        pet = dict(name='小暖', face=50, eyes=70, gap=40, smile=65, hair='buns',
+                   skin='#f3c9a9', hairColor='#594238', outfit='#719782', accessory='leaf')
+        state['settings']['pet'] = pet
+        self.store.save(state, 0)
+        self.assertEqual(Storage(self.temp.name).read()['state']['settings']['pet'], pet)
+        invalid = copy.deepcopy(state)
+        invalid['settings']['pet']['outfit'] = '<script>'
+        with self.assertRaises(ValueError):
+            self.store.save(invalid, 1)
+        self.assertEqual(self.store.read()['state'], state)
+
 
 class ApiTests(unittest.TestCase):
     def setUp(self):
