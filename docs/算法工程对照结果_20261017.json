@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-17",
+  "kind": "synthetic engineering requirements probes; not accuracy or efficacy",
+  "recommendation": [
+    {
+      "name": "其他阶段不沿用",
+      "baseline": false,
+      "updated": true
+    },
+    {
+      "name": "缺少阶段不猜测",
+      "baseline": false,
+      "updated": true
+    },
+    {
+      "name": "单次反馈影响小于 1",
+      "baseline": false,
+      "updated": true
+    },
+    {
+      "name": "30 天前的反馈影响更小",
+      "baseline": false,
+      "updated": true
+    },
+    {
+      "name": "低精力时更重视协调负担",
+      "baseline": false,
+      "updated": true
+    },
+    {
+      "name": "不确定保持中性",
+      "baseline": true,
+      "updated": true
+    },
+    {
+      "name": "关闭历史后不引用反馈",
+      "baseline": true,
+      "updated": true
+    },
+    {
+      "name": "超过可用时间不推荐",
+      "baseline": true,
+      "updated": true
+    }
+  ],
+  "clarification": [
+    {
+      "energy": "brief",
+      "fixedQuestions": 4,
+      "adaptiveQuestions": 1,
+      "unfilledFields": 4,
+      "stop": "budget"
+    },
+    {
+      "energy": "normal",
+      "fixedQuestions": 4,
+      "adaptiveQuestions": 2,
+      "unfilledFields": 4,
+      "stop": "budget"
+    }
+  ]
+}
