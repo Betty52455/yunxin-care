@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""孕心智护的本机文件服务。仅使用 Python 标准库，不连接外部服务。"""
+"""孕心智护的本机文件服务。仅使用 Python 标准库；模型接口须配置且单次确认后才调用。"""
 import argparse
 import copy
 import json
 import math
+import model_gateway
 import os
 from pathlib import Path
 import tempfile
@@ -19,6 +20,26 @@ def empty_state():
     return {"version": 1, "settings": {"name": "", "stage": "产后居家", "preferred": "休息", "available": 15},
             "moods": [], "needs": [], "tasks": [], "notes": [], "practices": [], "activities": [], "contacts": [],
             "helpCard": {"person": "", "place": "", "message": ""}}
+
+
+def validate_support(value):
+    def check(ok):
+        if not ok:
+            raise ValueError("陪伴偏好或练习进度格式不正确")
+    check(isinstance(value, dict))
+    check(value.get("stage") in ("pregnancy", "postpartum", "preconception"))
+    check(value.get("energy") in ("brief", "normal"))
+    check(type(value.get("history")) is bool)
+    drafts = value.get("drafts", {})
+    check(isinstance(drafts, dict))
+    choices = {"pregnancy": ("", "reassure", "listen", "plan"),
+               "postpartum": ("", "defend", "ask", "own")}
+    for key, draft in drafts.items():
+        check(key in choices and isinstance(draft, dict))
+        check(draft.get("perspective") in ("mother", "partner"))
+        check(type(draft.get("step")) is int and 0 <= draft["step"] <= 2)
+        check(draft.get("choice") in choices[key])
+        check(draft["step"] == 0 or bool(draft["choice"]))
 
 
 def validate_state(s):
@@ -47,6 +68,8 @@ def validate_state(s):
         string(s["settings"][k], 100)
     require(s["settings"]["preferred"] in ("倾听", "休息", "实际帮忙", "信息", "陪伴"))
     number(s["settings"]["available"], 1, 120)
+    if "support" in s["settings"]:
+        validate_support(s["settings"]["support"])
     if "pet" in s["settings"]:
         import re
         pet = s["settings"]["pet"]
@@ -96,6 +119,8 @@ def validate_state(s):
     obj(s["helpCard"], ["person", "place", "message"])
     for key in ("person", "place", "message"):
         string(s["helpCard"][key])
+    def context(value):
+        require(isinstance(value, dict) and value.get('stage') in ('pregnancy', 'postpartum', 'preconception'), '反馈阶段格式不正确')
     shapes = {
         "moods": ["date", "score", "sleep", "note"],
         "needs": ["category", "text", "created"],
@@ -126,8 +151,10 @@ def validate_state(s):
                 require(row["category"] in ("倾听", "休息", "实际帮忙", "信息", "陪伴"))
             if group == "notes":
                 require(type(row["pinned"]) is bool)
+            if group == "activities" and "context" in row:
+                context(row["context"])
             if group == "activities":
-                require(row["help"] in ("有帮助", "一般", "不适合"))
+                require(row["help"] in ("有帮助", "一般", "不适合", "不确定"))
             if group == "tasks":
                 date(row["date"])
                 require(row["owner"] in ("妈妈", "伴侣"))
@@ -135,9 +162,13 @@ def validate_state(s):
                 require(type(row["shared"]) is bool and type(row["revoked"]) is bool)
                 if row["feedback"] is not None:
                     obj(row["feedback"], ["help", "burden", "note"])
-                    require(row["feedback"]["help"] in ("有帮助", "一般", "没有帮助"))
-                    require(row["feedback"]["burden"] in ("没有", "一点", "较多"))
+                    require(row["feedback"]["help"] in ("有帮助", "一般", "没有帮助", "不确定"))
+                    require(row["feedback"]["burden"] in ("没有", "一点", "较多", "不确定"))
                     string(row["feedback"]["note"])
+                    if "context" in row["feedback"]:
+                        context(row["feedback"]["context"])
+                    if "updated" in row["feedback"]:
+                        string(row["feedback"]["updated"], 100)
     require(len({x["date"] for x in s["moods"]}) == len(s["moods"]), "同一天只能保留一条心情记录")
     return s
 
@@ -219,6 +250,8 @@ def make_handler(storage):
             if not self.allowed():
                 return self.send(403, {"error": "仅允许本机页面访问"})
             path = urlparse(self.path).path
+            if path == "/api/model/status":
+                return self.send(200, model_gateway.config())
             if path == "/api/health":
                 return self.send(200, {"app": "yunxin-local", "version": 1})
             if path == "/api/state":
@@ -227,6 +260,10 @@ def make_handler(storage):
                 except RuntimeError as e:
                     return self.send(500, {"error": str(e)})
             files = {"/": ("index.html", "text/html"), "/index.html": ("index.html", "text/html"),
+                     "/support.js": ("support.js", "text/javascript"),
+                     "/need-planner.js": ("need-planner.js", "text/javascript"),
+                     "/support-core.js": ("support-core.js", "text/javascript"),
+                     "/support.css": ("support.css", "text/css"),
                      "/weather.js": ("weather.js", "text/javascript"),
                      "/care.js": ("care.js", "text/javascript"), "/care.css": ("care.css", "text/css"),
                      "/pregnancy.js": ("pregnancy.js", "text/javascript"),
@@ -243,6 +280,18 @@ def make_handler(storage):
         def do_POST(self):
             if not self.allowed():
                 return self.send(403, {"error": "仅允许本机页面访问"})
+            if urlparse(self.path).path == "/api/need-proposal":
+                try:
+                    size = int(self.headers.get('Content-Length', '0'))
+                    if not 0 < size <= 24000:
+                        return self.send(413, {'error': '输入过大或为空'})
+                    if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':
+                        return self.send(415, {'error': '需要 JSON 格式'})
+                    return self.send(200, model_gateway.propose(json.loads(self.rfile.read(size))))
+                except (ValueError, TypeError):
+                    return self.send(400, {'error': '请核对输入并确认本次发送'})
+                except RuntimeError as error:
+                    return self.send(503, {'error': str(error)})
             if urlparse(self.path).path != "/api/state":
                 return self.send(404, {"error": "接口不存在"})
             try:
