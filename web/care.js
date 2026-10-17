@@ -21,10 +21,7 @@ function careHomeView(){
  <aside class="care-right"><section class="care-snapshot"><h2>${own?'今日记录':'一起分担'}</h2>${own?`<a href="#records"><span>体重</span><strong>${w?`${w.weight} <small>kg</small>`:'待记录'}</strong></a>${w?`<p class="care-measured">最近测量：${esc(w.date)}</p>`:''}<a href="#mood"><span>睡眠</span><strong>${m?`${m.sleep} <small>小时</small>`:'待记录'}</strong></a><a href="#mood"><span>心情</span><strong>${m?moodWords[m.score-1]:'待记录'}</strong></a><a class="care-record-link" href="#records">查看记录 →</a>`:`<p>听见需要，再接手一件力所能及的小事。</p><a href="#family">查看家庭协作 →</a><a href="#practice">练习好好说话 →</a>`}</section><yunxin-pet compact config="${esc(JSON.stringify(db.settings.pet||{}))}"></yunxin-pet></aside></div>
  <div class="care-bottom"><a href="#community">去孕妈社区聊聊 →</a><a href="#help">需要帮助</a></div></div>`;
 }
-function careHubView(){
- const items=[['needs','我的需要','把感受写下来，整理此刻最需要的支持。','leaf'],['family','家庭协作','商量安排、接手行动，再回顾是否有帮助。','people'],['practice','沟通练习','练习倾听、表达请求和说出真实反馈。','chat'],['support','日常支持','选一段适合自己的休息或陪伴活动。','sun'],['help','求助信息','保留支持联系人和自己的求助卡。','lifebuoy']];
- return `${head('陪伴支持','有人听见，有人分担，也给自己一点时间。')}<div class="care-hub"><section class="care-paper">${items.map(([id,title,desc,ico])=>`<a class="care-hub-row" href="#${id}">${icon(ico)}<div><h2>${title}</h2><p>${desc}</p></div>${icon('chevron')}</a>`).join('')}</section><aside class="care-companion-panel"><yunxin-pet config="${esc(JSON.stringify(db.settings.pet||{}))}"></yunxin-pet><p class="small-copy">想说的话可以慢慢说。这里保留了原来的需要、协作、练习、活动和求助功能。</p></aside></div>`;
-}
+function careHubView(){return supportHubView();}
 function careMyView(){return `${head('我的','个人偏好、备忘和备份，都在这里。')}<section class="care-paper"><a class="care-hub-row" href="#notes">${icon('note')}<div><h2>备忘录</h2><p>${db.notes.length} 条备忘 · 包括保存的问题</p></div>${icon('chevron')}</a><a class="care-hub-row" href="#settings">${icon('settings')}<div><h2>数据与设置</h2><p>个人偏好、切换视角、导出备份、恢复数据</p></div>${icon('chevron')}</a></section><p class="small-copy spaced">目前记录保存在${typeof YunxinStorage==='undefined'?'当前电脑':'当前浏览器'}。邮箱账号和跨设备同步尚未启用。</p>`;}
 function careWeightChart(){
  const rows=YunxinPregnancy.weights(carePreg());if(!rows.length)return empty('还没有体重记录','保存第一条测量后，这里会展示变化。','',true);
