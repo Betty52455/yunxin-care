@@ -1,0 +1,72 @@
+/* Shared cooperation visual: a progressively revealed pressed botanical wreath. */
+.energy-card {
+  gap:32px;padding:24px 30px;
+  background:linear-gradient(120deg,#fffaf0,#fffdf9 65%);
+  border-color:#d3c4a9;
+}
+.energy-visual {flex:0 0 216px}
+.energy-wreath {
+  position:relative;width:216px;aspect-ratio:1;
+  isolation:isolate;overflow:visible;
+}
+.wreath-ghost,.wreath-leaves {
+  display:block;position:absolute;inset:0;
+  width:100%;height:100%;object-fit:contain;
+  pointer-events:none;
+}
+.wreath-ghost {opacity:.16;filter:grayscale(.75)}
+.wreath-leaves {opacity:.95;transition:clip-path .75s cubic-bezier(.22,1,.36,1)}
+.wreath-center {
+  position:absolute;inset:28%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#715c43;text-align:center;pointer-events:none;
+}
+.wreath-center strong {
+  font:400 40px/1 Georgia,"Songti SC",serif;
+  font-variant-numeric:tabular-nums;color:#6f5a40;
+}
+.wreath-center span {font-size:10px;letter-spacing:2px;margin-top:5px;color:#6a6852}
+.wreath-center i {display:block;width:23px;height:1px;background:#c8b58f;margin:8px 0}
+.wreath-center small {
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:12px;letter-spacing:2px;white-space:nowrap;color:#7d6b50;
+}
+.energy-wreath.is-full .wreath-center small {color:#73663d}
+.wreath-caption {text-align:center;font-size:11px;color:#796c55;margin-top:10px;letter-spacing:.5px}
+.energy-copy .energy-title h2 {
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:22px;letter-spacing:1px;color:#66533e;margin:0;
+}
+.energy-title .pill {background:#f4efe1;color:#766443;border-color:#d6c6a5}
+.energy-copy p.small-copy {color:#756a56;line-height:1.9;max-width:45em;margin:14px 0 18px}
+.energy-stats strong {color:#776047;font-weight:500}
+.energy-stats span {color:#746e5a;font-size:11px}
+.energy-copy .wreath-footnote {font-size:10px;color:#82715a;margin:16px 0 0;line-height:1.7}
+.energy-actions .text-link {font-size:12px;color:#637452}
+@media(prefers-reduced-motion:no-preference) {
+  .energy-wreath.is-full .wreath-leaves {animation:wreath-unfurl .9s cubic-bezier(.22,1,.36,1) both}
+  @keyframes wreath-unfurl {
+    from {opacity:.2;transform:scale(.94) rotate(-4deg)}
+    to {opacity:.95;transform:scale(1) rotate(0)}
+  }
+}
+@media(max-width:900px) {
+  .energy-card {flex-direction:row;gap:22px;padding:22px}
+  .energy-visual {flex:0 0 180px}
+  .energy-wreath {width:180px}
+  .wreath-center strong {font-size:34px}
+  .wreath-center small {font-size:11px}
+  .wreath-caption {font-size:10px}
+}
+@media(max-width:600px) {
+  .energy-card {flex-direction:column;gap:22px;padding:24px 22px}
+  .energy-visual {flex:none}
+  .energy-wreath {width:216px}
+  .wreath-center strong {font-size:40px}
+  .energy-copy {width:100%}
+  .energy-title {justify-content:center;flex-wrap:wrap}
+  .energy-copy .energy-title h2 {font-size:21px}
+  .energy-stats {gap:20px;justify-content:space-between}
+  .energy-stats span {font-size:10px}
+  .energy-actions {gap:12px}
+}

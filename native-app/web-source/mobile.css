@@ -1,0 +1,66 @@
+/* Touch and safe-area refinements; shared diary branding remains unchanged. */
+.mobile-guide details{border-top:1px solid #dbe3d4;padding:12px 0}
+.mobile-guide summary{cursor:pointer;color:#42624c;min-height:32px;line-height:32px}
+.mobile-guide details p{font-size:13px;line-height:1.9;margin:10px 0 0;color:#5b7058}
+.mobile-cache-state{margin-top:12px;margin-bottom:0}
+@media(max-width:700px){
+  html{scroll-padding-top:100px;scroll-padding-bottom:110px}
+  body{padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+  .topbar{top:env(safe-area-inset-top);min-height:64px}
+  .tb-nav{padding-bottom:max(8px,env(safe-area-inset-bottom));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  .workspace{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+  .input,textarea,select,.field input:not([type=range]):not([type=checkbox]):not([type=radio]){font-size:16px;max-width:100%;min-height:46px}
+  input[type=date],input[type=time]{min-width:0;appearance:none;-webkit-appearance:none;display:block}
+  input[type=range]{min-height:44px;touch-action:pan-y}
+  .btn,.btn.small,.tab,.text-link,.role-button,.pchip,.preview-modes button,.studio-save-secondary .text-link{min-height:44px}
+  .icon-button{width:44px;height:44px;min-width:44px;min-height:44px;align-items:center;justify-content:center;flex-shrink:0;color:#52684d}
+  .row-controls{gap:8px;flex-shrink:0}
+  .tabs{gap:8px}
+  .tab{font-size:14px;color:#52644b}
+  .tab.active{font-weight:600;color:#344f3a}
+  .text-link,.studio-save-secondary .text-link{font-size:14px;color:#436b56}
+  .settings-row{gap:12px;flex-wrap:wrap}
+  .settings-row>div{flex:1 1 160px}
+  .settings-row>.btn{flex-shrink:0}
+  .main-title{flex-wrap:wrap;gap:12px}
+  .card-header{flex-wrap:wrap}
+  .card-header h2{min-width:0}
+  .subnav:not(.subnav-expanded){max-width:100%;overflow-x:auto}
+  /* Keep the four destinations in view without pushing today's form below the fold. */
+  .subnav-expanded{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:20px}
+  .subnav-expanded .subnav-item{min-width:0;min-height:52px;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;padding:8px 10px}
+  .subnav-expanded .subnav-symbol{width:24px;height:24px;flex:0 0 24px}
+  .subnav-expanded strong{font-size:14px;line-height:1.4;white-space:normal}
+  .subnav-expanded small{display:none}
+  .subnav-expanded .subnav-copy{gap:0}
+  /* A smaller live preview leaves the editor reachable on ordinary phone screens. */
+  .studio-preview{top:calc(68px + env(safe-area-inset-top));grid-template-columns:minmax(0,1fr) 108px;gap:8px;padding:12px}
+  .studio-head h2{font-size:18px;overflow-wrap:anywhere}
+  .studio-head p{font-size:12px;color:#52634d}
+  .preview-modes{gap:4px;flex-wrap:wrap;margin:0}
+  .preview-modes button{font-size:13px;padding:6px;color:#42573d}
+  .preview-modes button[aria-pressed=true]{font-weight:600;color:#324c39}
+  .studio-stage{width:108px;height:128px!important}
+  .studio-stage .pet-stage{height:128px!important}
+  .studio-stage .pet-doll{width:120px!important;height:128px!important;left:calc(50% - 60px)!important}
+  .studio-stage.zoom-face .pet-doll{translate:0 26px}
+  .studio-back a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+  /* Functional guidance must remain readable on the existing paper and sage surfaces. */
+  .panel-note{font-size:14px;color:#526447}
+  .panel-note.warm,.review-note,.inline-warning{color:#75603b}
+  input::placeholder,textarea::placeholder{color:#5d6b56;opacity:1}
+  .small-copy,.privacy-line,.field>label,.field-label,.field>small,.record p,.task-detail,.feedback-box,.practice-card p,.activity-card p,.note-card p,.contact-card p,.settings-row p,.modal-body p,.modal-body .field label,.step-list li,.quote-box,.studio-hint,.studio-unlock .small-copy,.mobile-guide details p{font-size:14px}
+  .small-copy,.privacy-line,.field>small,.record p,.task-detail,.feedback-box,.practice-card p,.activity-card p,.note-card p,.contact-card p,.settings-row p,.modal-body p,.step-list li,.quote-box,.studio-hint,.mobile-guide details p{color:#526447}
+  .mood-layout .garden-card .small-copy,.mood-record-card .privacy-line,.mood-record-card .inline-end .subtle{font-size:14px;color:#526447}
+  .studio-save-secondary>span{font-size:14px;color:#526447}
+  dialog{max-height:calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overscroll-behavior:contain}
+  .modal-footer{flex-wrap:wrap;gap:10px;padding-bottom:max(0px,env(safe-area-inset-bottom))}
+  .modal-footer .btn{flex:1 1 auto}
+  .toast{bottom:calc(98px + env(safe-area-inset-bottom));max-width:calc(100% - 32px)}
+  .weekly-controls{flex-wrap:wrap}
+  .weekly-reader{touch-action:pan-y}
+  .mobile-guide summary{min-height:44px;line-height:1.6;display:list-item;padding-block:10px}
+  @media(max-height:700px){.studio-preview{position:relative;top:0}}
+  @media(hover:none){.btn:active,.tab:active,.tb-nav a:active,.icon-button:active,.preview-modes button:active,.text-link:active{transform:scale(.97)}}
+}
+@media(prefers-reduced-motion:no-preference){.mobile-guide details[open]>p{animation:mobile-reveal .22s ease-out both}@keyframes mobile-reveal{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}

@@ -1,0 +1,9 @@
+{
+  "appId": "com.betty52455.yunxincare",
+  "appName": "孕心智护",
+  "webDir": "www",
+  "backgroundColor": "#f6f7f0",
+  "server": { "hostname": "localhost", "androidScheme": "https" },
+  "android": { "allowMixedContent": false, "webContentsDebuggingEnabled": false },
+  "ios": { "contentInset": "never", "preferredContentMode": "mobile" }
+}

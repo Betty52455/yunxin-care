@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" fill="none">
+  <g stroke="#759077" stroke-width="1" opacity=".18">
+    <path d="M1090-80C930 80 1010 220 1220 248s326 160 290 340"/>
+    <path d="M1120-80C960 80 1040 200 1242 224s328 168 300 350"/>
+    <path d="M-100 574C82 528 134 660 100 780S140 978 330 970"/>
+    <path d="M-100 595C58 551 109 667 79 780S130 1000 327 995"/>
+  </g>
+  <g fill="#819b78" opacity=".11" transform="translate(1290 104) rotate(32)">
+    <ellipse cx="-29" cy="22" rx="18" ry="43" transform="rotate(-42 -29 22)"/>
+    <ellipse cx="30" cy="76" rx="18" ry="43" transform="rotate(42 30 76)"/>
+    <ellipse cx="-29" cy="130" rx="18" ry="43" transform="rotate(-42 -29 130)"/>
+    <ellipse cx="30" cy="184" rx="18" ry="43" transform="rotate(42 30 184)"/>
+    <path d="M0-8V228" stroke="#819b78" stroke-width="2"/>
+  </g>
+  <g fill="#a4ac84" opacity=".12" transform="translate(46 700) rotate(-30)">
+    <ellipse cx="-23" cy="-28" rx="14" ry="33" transform="rotate(-42 -23 -28)"/>
+    <ellipse cx="23" cy="14" rx="14" ry="33" transform="rotate(42 23 14)"/>
+    <ellipse cx="-23" cy="56" rx="14" ry="33" transform="rotate(-42 -23 56)"/>
+    <path d="M0-62V105" stroke="#a4ac84" stroke-width="2"/>
+  </g>
+</svg>

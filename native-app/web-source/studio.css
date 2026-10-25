@@ -1,0 +1,92 @@
+/* ===== 2026-10 小暖工坊：毛绒小人形象设计 ===== */
+
+.studio-grid{display:grid;grid-template-columns:minmax(330px,.86fr) minmax(420px,1.14fr);gap:22px;align-items:start}
+.studio-preview{position:sticky;top:84px;overflow:hidden;padding:20px 22px 18px;border-color:#e1ebd9;background:linear-gradient(168deg,#eef6ef 0%,#fbfdf7 44%,#fdf7e9 100%)}
+.studio-preview::before{content:"";position:absolute;left:-16%;right:-16%;bottom:-64px;height:190px;border-radius:50%;background:#e9f0dd;opacity:.85}
+.studio-preview::after{content:"";position:absolute;right:14px;top:10px;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fbe3ac 32%,#fbe3ac00 72%);pointer-events:none}
+.studio-head{position:relative;z-index:1}
+.studio-tag{font-size:9px;letter-spacing:2px;color:#93a488}
+.studio-head h2{font-size:24px;font-weight:600;margin:3px 0 3px;color:#3a5544;letter-spacing:.3px}
+.studio-head p{margin:0;font-size:11.5px;color:#89988a}
+.studio-stage{position:relative;z-index:1;height:452px;display:flex;align-items:flex-end;justify-content:center;margin:6px 0 2px}
+.studio-stage yunxin-pet{width:100%;display:block}
+.studio-stage .pet-stage{height:446px!important;display:flex;align-items:flex-end;justify-content:center}
+.studio-stage .pet-doll{width:376px;height:432px;left:calc(50% - 188px);bottom:4px}
+.studio-stage .pet-actions,
+.studio-stage .pet-more,
+.studio-stage .pet-customize,
+.studio-stage .pet-label,
+.studio-stage .pet-speech{display:none!important}
+.studio-quote{position:relative;z-index:1;margin:10px 0 12px;padding:10px 13px;border-radius:12px;background:#fffdf5cc;border:1px solid #e7edde;font-size:11.5px;line-height:1.6;color:#657660;text-align:center}
+.studio-stats{position:relative;z-index:1;display:flex;gap:7px}
+.studio-stats>div{flex:1;padding:8px 4px;text-align:center;border-radius:10px;background:#fffdf6c7;border:1px solid #e8eedf}
+.studio-stats strong{display:block;font-size:15px;color:#4f7a5c;line-height:1.2}
+.studio-stats span{font-size:10px;color:#8b9a84}
+
+/* 控件 */
+.pfield{display:flex;flex-direction:column;gap:8px;margin-bottom:15px}
+.pfield>span{font-size:12px;color:#66765e;font-weight:500;display:flex;align-items:center;gap:7px}
+.unlock-hint{font-style:normal;font-size:10px;color:#a08a5e;background:#fbf3e0;border:1px solid #efe1c4;border-radius:20px;padding:1px 7px}
+.pchips{display:flex;flex-wrap:wrap;gap:7px}
+.prow{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.pchip{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:10px;border:1px solid #e2e8db;background:#fffefb;color:#5b7059;font-size:12px;transition:border-color .16s,background .16s}
+.pchip:hover{border-color:#c8dbc0;background:#f7fbf2}
+.pchip.on{border-color:#8fae83;background:#eef5e8;color:#3f6247;font-weight:600;box-shadow:inset 0 0 0 1px #cfe0c6}
+.pchip.locked{color:#a9b1a3;background:#f6f7f2;cursor:not-allowed}
+.pchip.locked small{font-size:9.5px;color:#b2b9ac}
+.pchip .icon{width:11px;height:11px}
+.psw{position:relative;flex:0 0 30px;width:30px;height:30px;min-width:30px;min-height:30px;max-width:30px;max-height:30px;padding:0;border-radius:50%;border:2px solid #fff;background-color:#f2efe4;box-shadow:0 0 0 1px #dfe6d7;cursor:pointer;overflow:hidden;transition:transform .16s,box-shadow .16s}
+.psw:hover{transform:translateY(-2px)}
+.psw.on{box-shadow:0 0 0 2px #6f9160}
+.psw.locked{opacity:.5;cursor:not-allowed}
+.psw.locked .icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;max-width:12px;max-height:12px;color:#fff}
+/* 色板：用属性选择器着色，避免内联样式被整体样式覆盖 */
+.psw[data-sw="#f3c9a9"]{background-color:#f3c9a9}
+.psw[data-sw="#e8b48f"]{background-color:#e8b48f}
+.psw[data-sw="#d79b76"]{background-color:#d79b76}
+.psw[data-sw="#b97f5f"]{background-color:#b97f5f}
+.psw[data-sw="#594238"]{background-color:#594238}
+.psw[data-sw="#7b4b33"]{background-color:#7b4b33}
+.psw[data-sw="#2f2a28"]{background-color:#2f2a28}
+.psw[data-sw="#a9784f"]{background-color:#a9784f}
+.psw[data-sw="#c9a06a"]{background-color:#c9a06a}
+.psw[data-sw="#719782"]{background-color:#719782}
+.psw[data-sw="#b58b9a"]{background-color:#b58b9a}
+.psw[data-sw="#829eb3"]{background-color:#829eb3}
+.psw[data-sw="#c4a16f"]{background-color:#c4a16f}
+.psw[data-sw="#8ea9c4"]{background-color:#8ea9c4}
+.psw[data-sw="#d7a3a9"]{background-color:#d7a3a9}
+
+.prange{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.prange label{width:63px;flex-shrink:0;font-size:11.5px;color:#7b8a74}
+.prange input[type=range]{flex:1;accent-color:#7fa06b;height:18px}
+.prange output{min-width:28px;text-align:right;font-size:11px;color:#93a08b}
+.studio-save{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:6px;padding-top:15px;border-top:1px solid #eef0e7}
+.studio-save .subtle{margin-left:auto;font-size:10.5px}
+
+/* 解锁清单 */
+.studio-unlock .unlock-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.unlock-list li{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:10px;background:#f8faf3;border:1px solid #eaefe2;font-size:11.5px;color:#6d7d6b}
+.unlock-list li.done{background:#eff6e8;border-color:#d7e6cb;color:#48704f}
+.unlock-list li>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:1px}
+.unlock-list b{font-weight:600;color:#4b6a52;font-size:12px}
+.unlock-list em{font-style:normal;font-size:10px;color:#9aa696}
+.unlock-list li.done em{color:#7c9a7e}
+.unlock-list .u-icon{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:#fff;border:1px solid #e4ebdc;color:#7f9a76}
+.unlock-list .u-icon .icon{width:14px;height:14px}
+.u-state{font-size:10.5px;color:#a3ad9d;white-space:nowrap}
+.unlock-list li.done .u-state{color:#6f9468;font-weight:600}
+
+/* 花园里花朵的回看弹窗 */
+.garden-day{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;background:#f7faf1;border:1px solid #e8eede;margin-bottom:14px}
+.garden-day-face .face{width:40px;height:40px;color:#7f9a76}
+.garden-day strong{display:block;font-size:14px;color:#40573f}
+.garden-day .subtle{font-size:11px}
+
+@media (max-width:1180px){
+  .studio-grid{grid-template-columns:1fr}
+  .studio-preview{position:relative;top:0}
+  .studio-stage{height:360px}
+  .studio-stage .pet-stage{height:354px!important}
+  .studio-stage .pet-doll{width:300px;height:344px;left:calc(50% - 150px)}
+}

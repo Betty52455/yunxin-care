@@ -1,0 +1,152 @@
+/* Homepage journal: ivory paper and sage accents, matching the shared interface. */
+body.is-home {
+  background-color:#eef1eb;
+  background-image:linear-gradient(120deg,#edf1e9b8,#f5f6f0c9),var(--paper-texture);
+  background-size:100% 100%,620px 620px;
+}
+body.is-home main {padding-top:22px;padding-bottom:32px}
+.home-dash {
+  position:relative;
+  isolation:isolate;
+  padding:22px 28px 24px 46px;
+  gap:20px;
+  grid-template-columns:minmax(280px,.85fr) minmax(0,1.3fr);
+  background-image:linear-gradient(#fcfdf9ed,#fcfdf9ed),var(--paper-texture);
+  background-size:auto,620px;
+  border:1px solid #becab8;
+  border-radius:7px 16px 16px 7px;
+  box-shadow:4px 5px 0 -2px #f3f6ef,5px 6px 0 -2px #c9d2c1,0 14px 25px -20px #435b4470;
+}
+.home-dash::before {
+  content:"";position:absolute;left:18px;top:0;bottom:0;width:12px;
+  background:linear-gradient(90deg,#a3b39a20,#fff9,#83987e17);
+  border-inline:1px solid #a8baa035;
+  pointer-events:none;
+}
+.home-dash::after {
+  content:"";position:absolute;right:18px;top:-1px;width:19px;height:38px;
+  background:linear-gradient(90deg,#7e9b87,#a5b6a0 48%,#88a18b);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 84%,0 100%);
+  pointer-events:none;
+}
+.home-hero {padding:0}
+.home-hello {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px;min-height:88px;padding:0 0 8px}
+.home-hello::after {right:132px;top:0;width:84px;height:84px;opacity:.25;transform:rotate(10deg)}
+.home-hello h1 {
+  font-family:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+  font-size:34px;font-weight:600;letter-spacing:.12em;line-height:1.3;
+  color:#304b40;margin:0;
+}
+.home-hello .journal-subtitle {font-size:13px;letter-spacing:.16em;color:#71816f;margin:6px 0 0;line-height:1.8;overflow-wrap:anywhere}
+.journal-intro {position:relative;z-index:1;display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:28px;align-items:center;padding-right:100px}
+.journal-intro h1 {grid-column:1;grid-row:1}
+.journal-intro .journal-subtitle {grid-column:1;grid-row:2}
+.journal-intro .journal-profile {grid-column:2;grid-row:1/3;justify-self:start}
+.journal-profile {display:inline-flex;gap:7px;align-items:center;max-width:100%;font-size:11px;color:#5e7663;border-bottom:1px solid #b8c7af;padding:0 0 4px;line-height:1.7}
+.journal-profile .icon {width:14px;height:14px}
+.journal-profile .icon:last-child {width:12px;height:12px}
+.journal-profile:hover {color:#496b53;border-bottom-color:#789473}
+.journal-date {display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:96px;padding:8px 0 0;color:#57715e;font-variant-numeric:tabular-nums}
+.journal-date span {font-size:11px;letter-spacing:1px}
+.journal-date strong {font-family:Georgia,"Songti SC",serif;font-size:36px;font-weight:400;line-height:1.12;margin:1px 0}
+.journal-date small {font-size:11px;letter-spacing:3px;border-top:1px solid #c4cfba;padding-top:7px;width:72px;text-align:center}
+.home-chips {margin-top:6px;border:0;border-block:1px solid #cbd5c4;border-radius:0;box-shadow:none;background:transparent;padding:12px 0}
+.home-chips::after {display:none}
+.home-chip {border-right-color:#ced8c6;padding-inline:20px}
+.home-chip span {color:#6d806d;font-size:11px;letter-spacing:.04em}
+.home-chip strong {color:#435d4b;font-size:19px}
+.home-chip:hover {background:#e7eee157}
+.home-chip:first-child {padding-left:0}
+.home-gardener {
+  background-color:#f1f4ec;
+  background-image:linear-gradient(150deg,#edf2e9dc,#f6f8f1df 65%,#e7eddfcf),var(--paper-texture);
+  border:6px solid #fbfcf7;
+  outline:1px solid #b9c8b0;
+  box-shadow:inset 0 0 0 1px #bcccb3,0 9px 18px -17px #46614166;
+  border-radius:12px;
+  padding:27px 26px 24px;
+  min-height:460px;
+}
+.home-gardener::before {inset:6px;border-color:#b9c9af;border-radius:5px;box-shadow:0 0 0 3px #fcfff875}
+.home-gardener::after {width:80px;height:105px;top:-12px;right:-10px;opacity:.52}
+.home-gardener .gardener-head {padding-right:18px;padding-bottom:6px}
+.gardener-head h2 {font-family:"Songti SC","STSong","SimSun",serif;font-size:23px;font-weight:600;letter-spacing:.06em;color:#405d47}
+.home-gardener .gardener-line {font-size:12px;color:#6b7f67;line-height:1.9;max-width:29ch;margin:8px 0;min-height:44px}
+.home-gardener .gardener-stats {border-top-color:#c1cfb8}
+.home-gardener .gardener-stats span {color:#6a7e64}
+.home-gardener .gardener-stats span+span {border-left-color:#c5d1bc}
+.home-gardener .gardener-stats strong {color:#526f54}
+.home-gardener .gardener-stats::before {background:#91aa80;border-color:#f5f8ef}
+.home-gardener .doll-studio-btn {border-color:#b4c7aa;color:#52724f;background:#fbfdf7;box-shadow:inset 0 1px 0 #fff}
+.home-gardener .gardener-go {background:#4e755f;border-color:#3d624b;color:#fffefb;box-shadow:inset 0 0 0 3px #4e755f,inset 0 0 0 4px #d6e6c950}
+.home-gardener .gardener-go:hover {background:#3e624d;box-shadow:inset 0 0 0 3px #3e624d,inset 0 0 0 4px #d6e6c970;transform:translateY(-1px)}
+.home-tiles {gap:12px}
+.home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {
+  background:#fdfefb;
+  border-color:#bfccb6;
+  box-shadow:inset 0 0 0 5px #f5f8ef,inset 0 0 0 6px #dce5d2;
+  padding:20px;grid-template-columns:42px minmax(0,1fr) 22px;column-gap:15px;
+}
+.home-tiles .tile:hover {background:#f2f6eb;border-color:#9fb592;box-shadow:inset 0 0 0 5px #f9fcf4,inset 0 0 0 6px #c2d2b4}
+.home-tiles .tile-icon {background:#edf2e6;border-color:#bfcdb3;color:#68765c;width:40px;height:42px;box-shadow:inset 0 0 0 3px #fbfdf6,inset 0 0 0 4px #dde7d2}
+.home-tiles .tile-body strong {font-size:18px;color:#3e5848}
+.home-tiles .tile-body small {font-size:12px;color:#6c7c68}
+.home-tiles .tile-stat {font-size:11px;color:#6b7c66}
+.home-tiles .tile-arrow {border-color:#c9d5bd;background:#f6f9f0;color:#718969;width:23px;height:23px}
+.home-note {background:#f3f7ed;border-color:#c2cfb6;box-shadow:inset 0 0 0 4px #fbfdf750,inset 0 0 0 5px #dce7cd70;color:#657b5e;font-size:12px}
+.home-note a {color:#526f50}
+@media(min-width:701px) and (max-width:1100px) {
+  .home-dash {padding:22px 24px 24px 40px;gap:22px;grid-template-columns:minmax(260px,.9fr) minmax(0,1.1fr)}
+  .home-hello h1 {font-size:32px}
+  .journal-intro {column-gap:20px;padding-right:0}
+  .home-hello::after {display:none}
+  .home-gardener {padding:25px 23px}
+  .home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {padding:18px;column-gap:12px;grid-template-columns:36px minmax(0,1fr) 20px}
+  .home-tiles .tile-icon {width:35px;height:38px}
+  .home-tiles .tile-body strong {font-size:16px}
+  .home-tiles .tile-body small {font-size:11px}
+}
+@media(max-width:700px) {
+  body.is-home main {padding:20px 12px 24px}
+  .home-dash {padding:18px 18px 20px 25px;gap:20px;border-radius:6px 12px 12px 6px}
+  .home-dash::before {left:7px;width:5px}
+  .home-dash::after {right:6px;width:10px;height:24px}
+  .home-hello {display:grid;grid-template-columns:minmax(0,1fr) 68px;gap:8px;min-height:106px;padding-bottom:4px}
+  .home-hello::after {display:none}
+  .journal-intro {display:block;padding-right:0}
+  .home-hello h1 {font-size:29px;padding:0;letter-spacing:.08em}
+  .home-hello .journal-subtitle {font-size:11px;letter-spacing:.08em;margin:5px 0 8px}
+  .journal-profile {font-size:10px;gap:4px}
+  .journal-profile .icon:last-child {display:none}
+  .journal-date {min-width:0;align-self:start;padding-top:4px}
+  .journal-date span {font-size:9px;letter-spacing:0}
+  .journal-date strong {font-size:32px}
+  .journal-date small {width:57px;font-size:9px;letter-spacing:1px}
+  .home-chips {padding:14px 0;margin-top:5px}
+  .home-chip {padding-inline:9px}
+  .home-chip span {font-size:10px}
+  .home-chip strong {font-size:15px}
+  .home-gardener {min-height:0;padding:23px 20px;border-width:5px;grid-template-columns:minmax(0,1fr) 105px;gap:10px}
+  .home-gardener::after {display:none}
+  .gardener-head h2 {font-size:19px;letter-spacing:0}
+  .home-gardener .gardener-line {font-size:11px;min-height:0}
+  .home-gardener .gardener-stage .pet-doll {width:140px!important;height:155px!important;left:calc(50% - 70px)!important}
+  .home-gardener .gardener-head {padding:0}
+  .home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {padding:18px 14px;grid-template-columns:30px minmax(0,1fr) 19px;column-gap:10px}
+  .home-tiles .tile-icon {width:30px;height:34px;border-radius:8px}
+  .home-tiles .tile-icon .icon {width:20px;height:20px}
+  .home-tiles .tile-body strong {font-size:15px}
+  .home-tiles .tile-body small {font-size:11px}
+  .home-tiles .tile-stat {font-size:10px}
+  .home-tiles .tile-arrow {width:19px;height:19px}
+  .home-tiles .tile-arrow .icon {width:13px;height:13px}
+  .home-note {font-size:11px;padding:14px 12px}
+}
+@media(max-width:360px) {
+  .home-dash {padding-inline:20px 13px}
+  .home-hello h1 {font-size:29px}
+  .home-chip {padding-inline:6px}
+  .home-chip strong {font-size:13px}
+  .home-gardener {padding:20px 15px;grid-template-columns:minmax(0,1fr) 90px}
+  .gardener-head h2 {font-size:17px}
+}

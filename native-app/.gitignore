@@ -1,0 +1,16 @@
+node_modules/
+.tools/
+www/
+artifacts/
+*.log
+*-registry.json
+android-download-page.html
+android/local.properties
+android/.gradle/
+android/**/build/
+ios/App/App/public/
+.signing/
+*.keystore
+*.jks
+*.p12
+*.mobileprovision

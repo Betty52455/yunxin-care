@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">孕心智护</string>
+    <string name="title_activity_main">孕心智护</string>
+    <string name="package_name">com.betty52455.yunxincare</string>
+    <string name="custom_url_scheme">com.betty52455.yunxincare</string>
+</resources>
