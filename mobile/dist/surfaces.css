@@ -1,0 +1,336 @@
+/* Shared material and frame system. Decorative layers never intercept input. */
+:root {
+  --surface-edge: #bfcbb5;
+  --surface-inner: #edf0e5;
+  --surface-paper: #fffdf7;
+  --surface-shadow: 0 10px 24px -19px #40533470;
+  --paper-texture: url("assets/cotton-paper.png");
+}
+body {
+  background-color: #f3f0e5;
+  background-image: linear-gradient(120deg,#f5eedb45,#e2ebdb55),var(--paper-texture);
+  background-size: 100% 100%,620px 620px;
+  background-repeat: no-repeat,repeat;
+  background-attachment: fixed;
+}
+.topbar {
+  background: #fffdf7f5;
+  border-bottom: 1px solid #bbc9ae;
+  box-shadow: 0 3px 0 #fffdf7,0 4px 0 #dce3d2;
+}
+.tb-nav a {
+  border: 1px solid transparent;
+}
+.tb-nav a.active {
+  border-color: #b9c9ab;
+  background: #e9efdf;
+  box-shadow: inset 0 0 0 3px #f4f7eb;
+}
+/* Paper panels have a fine outer edge and a recessed inner keyline. */
+.card,.care-paper,.care-snapshot,.care-ask,.community-post,
+.task-card,.note-card,.summary-card,.care-record-top,
+.energy-card,.care-companion-panel,.community-intro,.alert-card {
+  border: 1px solid var(--surface-edge);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 4px #fffef880,inset 0 0 0 5px #dfe5d360;
+}
+.card-header {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #dbe2cf;
+}
+.card-header .count,.pill,.lv-badge {
+  border: 1px solid #d2ddc4;
+  box-shadow: inset 0 1px 0 #fffdf7;
+}
+.mood-record-card {border-top:3px solid #91aa80}
+.mood-record-card>.card-header {padding-bottom:23px}
+.mood-layout .garden-card {border-color:#b7c9a7}
+.mood-history-card {border-top:3px solid #c5c9a4}
+.care-record-top,.care-snapshot {
+  background-image: linear-gradient(110deg,#ecf2e4e8,#e8efdfeb),var(--paper-texture);
+  background-size:auto,480px;
+}
+/* Compact controls: pressed rims for selection, a raised rim for action. */
+.btn,.icon-button,.pchip,.chip,.doll-studio-btn,
+.community-filters button,.care-subnav a,.role-option,.alert-chip {
+  border:1px solid #b9c8ae;
+  box-shadow:inset 0 1px 0 #ffffffb3,0 2px 2px -1px #4e65361a;
+  transition:border-color .2s,background-color .2s,box-shadow .2s,transform .25s var(--ui-ease);
+}
+.btn:hover,.icon-button:hover,.pchip:hover,.chip:hover,.doll-studio-btn:hover {
+  border-color:#7d9b6a;
+  box-shadow:inset 0 1px 0 #fff,0 5px 10px -7px #3e5d3260;
+}
+.btn.primary,.gardener-go {
+  border:1px solid #355740;
+  box-shadow:inset 0 1px 0 #ffffff30,inset 0 0 0 3px #ffffff0a,0 4px 8px -6px #2c503d88;
+}
+.pchip.on,.chip.active,.care-subnav a[aria-current],.role-option:hover,
+.community-filters button.active {
+  border-color:#789568;
+  box-shadow:inset 0 0 0 2px #f4f8ed;
+}
+.tabs,.subnav:not(.subnav-expanded),.studio-tabs {
+  border:1px solid #c6d2ba;
+  background:#eaf0e2;
+  border-radius:10px;
+  padding:5px;
+  box-shadow:inset 0 1px 3px #5e764317;
+}
+.tab.active,.subnav:not(.subnav-expanded) .active,.studio-tabs button[aria-selected=true] {
+  border:1px solid #b9c9a8;
+  background:#fffdf6;
+  box-shadow:inset 0 0 0 2px #f0f4e7;
+  border-radius:7px;
+}
+.studio-tabs button {border:1px solid transparent;margin:0;border-radius:7px}
+.input,input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=hidden]),textarea,select {
+  border:1px solid #c4cfb8;
+  border-bottom-color:#9caf8a;
+  border-radius:9px;
+  background-color:#fffef9;
+  box-shadow:inset 0 2px 4px #495c3410,0 1px 0 #fff;
+}
+.input:focus,input:not([type=range]):focus,textarea:focus,select:focus {
+  border-color:#6c8d5b;
+  box-shadow:inset 0 1px 3px #495c3410,0 3px 8px -5px #375c3266;
+}
+.quote,.quote-box,.panel-note,.suggestion,.review-note,.task-detail,
+.alert-reply,.grant-checks,.unlock-hint,.garden-day,.need-mini,.quick-note {
+  border:1px solid #ced8bf;
+  border-radius:10px;
+  box-shadow:inset 0 0 0 3px #fffffa6b;
+}
+.settings-row,.care-task,.care-visit,.care-hub-row,.unlock-list li {
+  border-bottom-style:dashed;
+  border-bottom-color:#cbd5bd;
+}
+dialog {
+  border:1px solid #9fb48f;
+  border-radius:16px;
+  background:#fffdf7;
+  box-shadow:inset 0 0 0 5px #f1f4e8,0 24px 64px -20px #233a3066;
+}
+.modal-head {
+  background:linear-gradient(110deg,#e8efde,#faf9ee);
+  border-bottom:1px solid #c8d5b8;
+  margin:5px 5px 0;
+  border-radius:10px 10px 0 0;
+}
+.modal-footer {padding-top:18px;border-top:1px dashed #ccd7be}
+/* Homepage: an inset journal strip and a fabric-backed companion frame. */
+.home-chips {
+  margin-top:24px;
+  padding:18px 22px;
+  background:#fffdf7de;
+  border:1px solid #c1ccb3;
+  border-radius:12px;
+  box-shadow:inset 0 0 0 4px #fafbf3,inset 0 0 0 5px #e0e7d5;
+}
+.home-chip {border-right-color:#cad5bc;padding-inline:24px}
+.home-chip:first-child {padding-left:4px}
+.home-gardener {
+  position:relative;
+  padding:30px;
+  border:8px solid #fbfaf2;
+  outline:1px solid #b7c5a7;
+  border-radius:16px;
+  background-color:#dfe8d4;
+  background-image:linear-gradient(#dce8d1c9,#dce8d1c9),var(--paper-texture);
+  background-size:auto,420px;
+  box-shadow:inset 0 0 0 1px #a8ba97,0 12px 22px -18px #354d2e88;
+}
+.home-gardener::before {
+  display:block;
+  content:"";
+  position:absolute;
+  inset:7px;
+  width:auto;height:auto;
+  border:1px dashed #a6b78e;
+  border-radius:7px;
+  background:none;
+  pointer-events:none;
+  opacity:.8;
+}
+.home-gardener::after {display:none}
+.home-gardener .gardener-head {padding-bottom:10px;border-bottom:1px solid #bfcfad}
+.home-gardener .gardener-head h2 {margin-bottom:0}
+.gardener-stats {padding-block:14px;border-top:1px dashed #aaba93}
+.home-tiles {border:0;gap:12px}
+.home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {
+  border:1px solid #bac8ac;
+  border-radius:12px;
+  padding:20px 24px;
+  background:#fffdf6ed;
+  box-shadow:inset 0 0 0 4px #f5f6ec,inset 0 0 0 5px #e0e6d4;
+}
+.home-tiles .tile:hover {
+  background:#f4f7ea;
+  border-color:#91aa7b;
+  transform:translateY(-2px);
+  box-shadow:inset 0 0 0 4px #fbfcf4,inset 0 0 0 5px #c7d7b7,0 7px 14px -10px #45623666;
+}
+.home-tiles .tile-icon {
+  width:46px;height:46px;
+  border:1px solid #c7d4b7;
+  border-radius:12px;
+  background:linear-gradient(135deg,#f4f7ec,#e6eedc);
+  box-shadow:inset 0 0 0 3px #fffdf790;
+}
+.home-tiles .tile-arrow {
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  border:1px solid #d1ddc3;
+  border-radius:50%;
+  background:#f6f8ef;
+}
+.home-note {
+  border:1px dashed #aebf97;
+  padding:15px 20px;
+  border-radius:10px;
+  background:#f8f8ece6;
+}
+.studio-preview {
+  border:6px solid #fafbf1;
+  outline:1px solid #bac9ac;
+  background-image:linear-gradient(#e3ebd8d9,#e3ebd8d9),var(--paper-texture);
+  background-size:auto,420px;
+  box-shadow:inset 0 0 0 1px #c0cfaf;
+}
+#studio-controls {border-color:#b9c9a9}
+.studio-unlock {border:0;box-shadow:none;background:none}
+@media(max-width:700px) {
+  body {background-size:100% 100%,420px 420px}
+  .home-chips {padding:15px 12px;border-radius:10px}
+  .home-chip {padding-inline:9px}
+  .home-gardener {padding:22px;border-width:6px}
+  .home-gardener .gardener-head {padding-bottom:8px}
+  .home-gardener::before {inset:5px}
+  .home-tiles {gap:10px}
+  .home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {
+    padding:18px;grid-template-columns:36px minmax(0,1fr) 22px;column-gap:12px;
+  }
+  .home-tiles .tile-icon {width:34px;height:38px;border-radius:9px}
+  .home-tiles .tile-icon .icon {width:22px;height:22px}
+  .home-tiles .tile-arrow {width:22px;height:22px}
+  .home-tiles .tile-body strong {font-size:16px}
+  .home-tiles .tile-body small {font-size:11px}
+  .home-note {padding:14px 16px}
+  .studio-preview {border-width:4px}
+}
+@media(max-width:360px) {
+  .home-gardener {padding:18px 15px;grid-template-columns:minmax(0,1fr) 100px}
+  .home-chip {padding-inline:6px}
+  .home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {padding:16px 13px}
+}
+
+/* Fine stationery details: warm metallic corner strokes and pressed botanicals. */
+:root {--surface-edge:#c4cbb6}
+.card,.care-paper,.care-snapshot,.care-ask,.community-post,
+.task-card,.note-card,.summary-card,.care-record-top,.energy-card,
+.care-companion-panel,.community-intro,.alert-card {
+  box-shadow:inset 0 0 0 5px #fffdf750,inset 0 0 0 6px #d8deca70;
+}
+.card:not(.studio-preview),.care-paper,.community-post,
+.energy-card,.home-tiles .tile,.home-chips {position:relative}
+.card:not(.studio-preview):not(.studio-unlock)::after,
+.care-paper::after,.community-post::after,.energy-card::after,
+.home-tiles .tile::after,.home-chips::after {
+  content:"";
+  display:block;
+  position:absolute;
+  inset:0;
+  width:auto;height:auto;
+  border:28px solid transparent;
+  border-image:url("assets/frame-corners.svg") 32 / 28px / 0 stretch;
+  border-radius:0;
+  background:none;
+  opacity:.72;
+  pointer-events:none;
+  transition:opacity .25s var(--ui-ease);
+}
+.home-tiles .tile:hover::after {opacity:1}
+.home-tiles .tile,.home-tiles .tile:first-child,.home-tiles .tile:last-child {
+  border-color:#c5cbb6;
+  box-shadow:inset 0 0 0 5px #fffef8,inset 0 0 0 6px #e0e3d2;
+}
+.home-tiles .tile:hover {
+  box-shadow:inset 0 0 0 5px #fffef8,inset 0 0 0 6px #bacbaa,0 6px 12px -10px #53694470;
+}
+.home-tiles .tile-icon {
+  border-color:#bdc9aa;
+  box-shadow:inset 0 0 0 3px #fffdf7, inset 0 0 0 4px #dbe3ce;
+}
+.home-gardener {border-color:#fffdf6;outline-color:#b6bda0}
+.home-gardener::before {
+  inset:7px;
+  border:1px solid #b5c2a3;
+  border-radius:8px;
+  opacity:1;
+  box-shadow:0 0 0 3px #edf2e24d;
+}
+.home-gardener::after {
+  content:"";display:block;position:absolute;
+  top:-15px;right:-10px;left:auto;bottom:auto;
+  width:104px;height:132px;
+  background:url("assets/pressed-botanical.png") center/contain no-repeat;
+  transform:rotate(-12deg);
+  opacity:.72;pointer-events:none;
+}
+.home-gardener .gardener-head {padding-right:40px;border-bottom:0}
+.home-gardener .gardener-line {max-width:29ch}
+.home-gardener .gardener-stats {
+  border-top:1px solid #bac8a6;
+  position:relative;
+}
+.home-gardener .gardener-stats::before {
+  content:"";position:absolute;top:-4px;left:calc(50% - 3px);
+  width:6px;height:6px;background:#c1b38b;
+  border:1px solid #f1f3df;transform:rotate(45deg);pointer-events:none;
+}
+.home-hello {position:relative;min-height:56px}
+.home-hello::after {
+  content:"";position:absolute;right:210px;top:-20px;
+  width:110px;height:104px;
+  background:url("assets/pressed-botanical.png") center/contain no-repeat;
+  transform:rotate(18deg);opacity:.55;pointer-events:none;
+}
+.home-hello h1,.home-hello p {position:relative;z-index:1}
+.card-header {border-bottom-color:#d4d8c2}
+.btn.primary,.gardener-go {
+  box-shadow:inset 0 0 0 3px #456a51,inset 0 0 0 4px #b9cda544,0 3px 8px -6px #2c503d88;
+}
+.btn.primary:hover,.gardener-go:hover {
+  box-shadow:inset 0 0 0 3px #456a51,inset 0 0 0 4px #d1dfb875,0 5px 10px -6px #2c503d88;
+}
+.home-note {
+  border-style:solid;
+  border-color:#bcc7a9;
+  background:#fbf9eceb;
+  box-shadow:inset 0 0 0 4px #fffdf780,inset 0 0 0 5px #d8dec480;
+}
+.studio-preview {
+  outline-color:#b9bea2;
+  box-shadow:inset 0 0 0 1px #b7c4a5,inset 0 0 0 5px #f6f8ed80;
+}
+.studio-preview::after {
+  display:block;content:"";position:absolute;right:-9px;top:-18px;
+  width:88px;height:98px;border-radius:0;
+  background:url("assets/pressed-botanical.png") center/contain no-repeat;
+  opacity:.5;pointer-events:none;
+}
+dialog {border-color:#adb594;box-shadow:inset 0 0 0 5px #f8f8ec,inset 0 0 0 6px #d7dec3,0 24px 64px -20px #233a3066}
+@media(max-width:1000px) {
+  .home-hello::after {right:165px;width:78px;height:80px;opacity:.38}
+}
+@media(max-width:700px) {
+  .home-hello {min-height:0}
+  .home-hello::after {right:-8px;top:-8px;width:70px;height:84px;opacity:.22}
+  .home-hello h1 {padding-right:20px}
+  .home-gardener::after {display:none}
+  .home-gardener .gardener-head {padding-right:0}
+  .studio-preview::after {width:55px;height:64px;right:-7px;top:-14px;opacity:.4}
+  .card:not(.studio-preview):not(.studio-unlock)::after,
+  .care-paper::after,.community-post::after,.energy-card::after,
+  .home-tiles .tile::after,.home-chips::after {border-image-width:22px;border-width:22px;opacity:.6}
+}

@@ -1,0 +1,9 @@
+{
+  "name": "yunxin-care-desktop",
+  "productName": "孕心智护",
+  "version": "1.0.0",
+  "description": "孕心智护本地桌面应用",
+  "author": "Yunxin Care",
+  "main": "main.cjs",
+  "private": true
+}

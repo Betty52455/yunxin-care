@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "孕心智护 · 孕心手记",
+  "short_name": "孕心智护",
+  "description": "记录身心 留存日常",
+  "lang": "zh-CN",
+  "start_url": "./#home",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f0",
+  "theme_color": "#f6f7f0",
+  "icons": [
+    {
+      "src": "assets/app-icon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

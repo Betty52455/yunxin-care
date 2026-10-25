@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" fill="none">
+  <defs>
+    <g id="corner" stroke="#ad9e76" stroke-width="1" stroke-linecap="round">
+      <path d="M7 30V16a9 9 0 0 1 9-9h14"/>
+      <path d="M12 25V18a6 6 0 0 1 6-6h7" opacity=".5"/>
+      <path d="M5 5h4M7 3v4" opacity=".6"/>
+      <path d="m17 17 2-2 2 2-2 2z" fill="#c8b994" stroke="none"/>
+    </g>
+  </defs>
+  <use href="#corner"/>
+  <use href="#corner" transform="translate(96 0) rotate(90)"/>
+  <use href="#corner" transform="translate(96 96) rotate(180)"/>
+  <use href="#corner" transform="translate(0 96) rotate(270)"/>
+</svg>
